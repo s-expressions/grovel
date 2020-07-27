@@ -58,14 +58,17 @@
       (let ((next-id (+ 1 (cdr g))))
         (set-cdr! g next-id)
         (line g "")
-        (line g "static void grovel_" (number->string next-id) "(void) {")
+        (line g "static void grovel_" (number->string next-id) "(void)")
+        (line g "{")
         (thunk g)
         (line g "}")))
 
     (define (grovel-c-type-signedness g typename)
       (with-g
        g (lambda (g)
-           (line g "  const char *grovel_tmp = "
+           (line g "  const char *grovel_tmp;")
+           (line g "")
+           (line g "  grovel_tmp = "
                  "("
                  "((" (the-identifier typename) ")-1)"
                  " < "
@@ -111,6 +114,7 @@
            (line g
                  "  "
                  "static struct " (the-identifier structname) " grovel_tmp;")
+           (line g "")
            (line g
                  "  "
                  "grovel_uintmax("
@@ -191,12 +195,18 @@
         (grovel-c-quote
          g
          ""
-         "static void check(int rv) { if (rv < 0) exit(1); }"
+         "static void check(int rv)"
+         "{"
+         "  if (rv < 0) {"
+         "    exit(1);"
+         "  }"
+         "}"
          ""
          "static void grovel_uintmax("
          "  const char *prefix,"
          "  const char *symbol,"
-         "  uintmax_t value)"
+         "  uintmax_t value"
+         ")"
          "{"
          "  check(printf(\"(%s %s %\" PRIuMAX \")\\n\","
          "    prefix, symbol, value));"
@@ -205,7 +215,8 @@
          "static void grovel_intmax("
          "  const char *prefix,"
          "  const char *symbol,"
-         "  intmax_t value)"
+         "  intmax_t value"
+         ")"
          "{"
          "  check(printf(\"(%s %s %\" PRIdMAX \")\\n\","
          "    prefix, symbol, value));"
@@ -214,7 +225,8 @@
          "static void grovel_symbol("
          "  const char *prefix,"
          "  const char *symbol,"
-         "  const char *value)"
+         "  const char *value"
+         ")"
          "{"
          "  check(printf(\"(%s %s %s)\\n\", prefix, symbol, value));"
          "}"
@@ -222,7 +234,8 @@
          "static void grovel_string("
          "  const char *prefix,"
          "  const char *symbol,"
-         "  const char *value)"
+         "  const char *value"
+         ")"
          "{"
          "  check(printf(\"(%s %s \\\"%s\\\")\\n\", prefix, symbol, value));"
          "}"
@@ -231,7 +244,8 @@
 
     (define (c-groveler->string g)
       (line g "")
-      (line g "int main(void) {")
+      (line g "int main(void)")
+      (line g "{")
       (let ((first-id 1)
             (last-id (cdr g)))
         (let loop ((i first-id))
