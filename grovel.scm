@@ -32,8 +32,12 @@
                                  (grovel-c-include g filename)))
                            (else
                             (error "Huh include?" form))))
+                    ((constant signed ,constant)
+                     (grovel-c-constant-integer g constant))
                     ((constant-ifdef signed ,constant)
                      (grovel-c-constant-ifdef-integer g constant))
+                    ((call-constant string ,function ,constant)
+                     (grovel-c-call-constant-string g function constant))
                     ((call-constant-ifdef string ,function ,constant)
                      (grovel-c-call-constant-ifdef-string g function constant))
                     (,_
