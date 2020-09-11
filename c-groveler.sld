@@ -8,8 +8,8 @@
           grovel-c-constant-string-ifdef
           grovel-c-include
           grovel-c-quote
-          grovel-c-struct-field-offset
-          grovel-c-struct-field-size
+          grovel-c-struct-slot-offset
+          grovel-c-struct-slot-size
           grovel-c-struct-size
           grovel-c-type-signedness
           grovel-c-type-size)
@@ -107,7 +107,7 @@
                  "sizeof(struct " (the-identifier structname) ")"
                  ");"))))
 
-    (define (grovel-c-struct-field-size g structname fieldname)
+    (define (grovel-c-struct-slot-size g structname slot-name)
       (with-g
        g (lambda (g)
            (line g
@@ -123,11 +123,11 @@
                    "struct-"
                    (the-identifier structname)
                    "."
-                   (the-identifier fieldname)))
+                   (the-identifier slot-name)))
                  ", "
-                 "sizeof(grovel_tmp." (the-identifier fieldname) "));"))))
+                 "sizeof(grovel_tmp." (the-identifier slot-name) "));"))))
 
-    (define (grovel-c-struct-field-offset g structname fieldname)
+    (define (grovel-c-struct-slot-offset g structname slot-name)
       (with-g
        g (lambda (g)
            (line g "  "
@@ -138,10 +138,10 @@
                    "struct-"
                    (the-identifier structname)
                    "."
-                   (the-identifier fieldname)))
+                   (the-identifier slot-name)))
                  ", "
                  "offsetof(struct " (the-identifier structname)
-                 ", " (the-identifier fieldname) "));"))))
+                 ", " (the-identifier slot-name) "));"))))
 
     (define (constant-integer-thunk g identifier)
       (line g
