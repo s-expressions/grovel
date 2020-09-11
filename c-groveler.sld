@@ -17,7 +17,9 @@
           grovel-c-struct-slot-size
           grovel-c-struct-size
           grovel-c-type-signedness
-          grovel-c-type-size)
+          grovel-c-type-size
+
+          grovel-c-type-slot)
   (import (scheme base)
           (scheme char))
   (begin
@@ -45,6 +47,32 @@
                                            s)
                           (write-char #\"))
                         (get-output-string out))))
+
+    (define (split-string-at-char s char)
+      (let loop ((fields '()) (a 0) (b 0))
+        (define (field) (if (= a b) fields (cons (substring s a b) fields)))
+        (cond ((= b (string-length s))
+               (reverse (field)))
+              ((char=? char (string-ref s b))
+               (loop (field) (+ b 1) (+ b 1)))
+              (else
+               (loop fields a (+ b 1))))))
+
+    (define (the-lisp-type type)
+      (symbol->string type))
+
+    (define (the-c-type type)
+      (let ((parts (split-string-at-char (symbol->string type) #\-)))
+        (when (null? parts) (error "C type is blank"))
+        (let loop ((c-type "") (parts parts))
+          (if (null? parts) c-type
+              (loop (string-append c-type
+                                   (if (equal? "" c-type) "" " ")
+                                   (let ((part (car parts)))
+                                     (if (equal? "pointer" part)
+                                         "*"
+                                         part)))
+                    (cdr parts))))))
 
     (define (line g . strings)
       (set-car! g (apply string-append
@@ -89,15 +117,15 @@
                  "grovel_tmp"
                  ");"))))
 
-    (define (grovel-c-type-size g typename)
+    (define (grovel-c-type-size g type)
       (with-g
        g (lambda (g)
            (line g
                  "  "
                  "grovel_uintmax("
                  (c-string "type-size") ", "
-                 (c-string (the-identifier typename)) ", "
-                 "sizeof(" (the-identifier typename) ")"
+                 (c-string (the-lisp-type type)) ", "
+                 "sizeof(" (the-c-type type) ")"
                  ");"))))
 
     (define (grovel-c-struct-size g structname)
@@ -133,6 +161,42 @@
                  ", "
                  "sizeof(grovel_tmp." (the-identifier slot-name) "));"))))
 
+    (define (grovel-c-type-slot-size g type slot)
+      (with-g
+       g (lambda (g)
+           (line g
+                 "  "
+                 "static " (the-c-type type) " grovel_tmp;")
+           (line g "")
+           (line g
+                 "  "
+                 "grovel_uintmax_2("
+                 (c-string "slot-size")
+                 ", "
+                 (c-string (the-lisp-type type))
+                 ", "
+                 (c-string (the-identifier slot))
+                 ", "
+                 "sizeof(grovel_tmp." (the-identifier slot) "));"))))
+
+    (define (grovel-c-type-slot-offset g type slot)
+      (with-g
+       g (lambda (g)
+           (line g "  "
+                 "grovel_uintmax_2("
+                 (c-string "slot-offs")
+                 ", "
+                 (c-string (the-lisp-type type))
+                 ", "
+                 (c-string (the-identifier slot))
+                 ", "
+                 "offsetof("
+                 (the-c-type type)
+                 ", "
+                 (the-identifier slot)
+                 ")"
+                 ");"))))
+
     (define (grovel-c-struct-slot-offset g structname slot-name)
       (with-g
        g (lambda (g)
@@ -146,6 +210,10 @@
                  ", "
                  "offsetof(struct " (the-identifier structname)
                  ", " (the-identifier slot-name) "));"))))
+
+    (define (grovel-c-type-slot g type slot)
+      (grovel-c-type-slot-offset g type slot)
+      (grovel-c-type-slot-size g type slot))
 
     (define (constant-integer-thunk g identifier)
       (line g

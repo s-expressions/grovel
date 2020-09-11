@@ -44,6 +44,8 @@
                      (grovel-c-type-signedness g type))
                     ((type-size ,type)
                      (grovel-c-type-size g type))
+                    ((type-slot ,type ,slot)
+                     (grovel-c-type-slot g type slot))
                     (,_
                      (error "Huh?" form))))
                 input)
