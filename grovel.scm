@@ -40,6 +40,8 @@
                      (grovel-c-constant-string g constant))
                     ((constant-ifdef signed ,constant)
                      (grovel-c-constant-ifdef-signed g constant))
+                    ((constant-ifdef unsigned ,constant)
+                     (grovel-c-constant-ifdef-unsigned g constant))
                     ((call-constant string ,function ,constant)
                      (grovel-c-call-constant-string g function constant))
                     ((call-constant-ifdef string ,function ,constant)

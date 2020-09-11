@@ -1,2 +1,5 @@
 *.c
+*.err
+*.exe
+*.obj
 /groveltmp

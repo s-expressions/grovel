@@ -5,6 +5,7 @@
           grovel-c-constant-signed
           grovel-c-constant-unsigned
           grovel-c-constant-ifdef-signed
+          grovel-c-constant-ifdef-unsigned
 
           grovel-c-constant-string
           grovel-c-constant-ifdef-string
@@ -264,6 +265,13 @@
        g (lambda (g)
            (line g "#ifdef " (the-identifier identifier))
            (constant-signed-thunk g identifier)
+           (line g "#endif"))))
+
+    (define (grovel-c-constant-ifdef-unsigned g identifier)
+      (with-g
+       g (lambda (g)
+           (line g "#ifdef " (the-identifier identifier))
+           (constant-unsigned-thunk g identifier)
            (line g "#endif"))))
 
     (define (grovel-c-constant-signed g identifier)
