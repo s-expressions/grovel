@@ -1,6 +1,10 @@
 (include <errno.h>)
 (include <string.h>)
 
+;; Highest errno number defined by the OS.
+(constant-ifdef signed ELAST)
+
+(constant-ifdef signed E2BIG)
 (constant-ifdef signed EACCES)
 (constant-ifdef signed EADDRINUSE)
 (constant-ifdef signed EADDRNOTAVAIL)
@@ -160,6 +164,7 @@
 (constant-ifdef signed EXDEV)
 (constant-ifdef signed EXFULL)
 
+(call-constant-ifdef string strerror E2BIG)
 (call-constant-ifdef string strerror EACCES)
 (call-constant-ifdef string strerror EADDRINUSE)
 (call-constant-ifdef string strerror EADDRNOTAVAIL)

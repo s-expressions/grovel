@@ -1,3 +1,5 @@
+(constant ELAST 106)
+(constant E2BIG 7)
 (constant EACCES 13)
 (constant EADDRINUSE 48)
 (constant EADDRNOTAVAIL 49)
@@ -104,6 +106,7 @@
 (constant EUSERS 68)
 (constant EWOULDBLOCK 35)
 (constant EXDEV 18)
+(call-constant strerror E2BIG "Argument list too long")
 (call-constant strerror EACCES "Permission denied")
 (call-constant strerror EADDRINUSE "Address already in use")
 (call-constant strerror EADDRNOTAVAIL "Can't assign requested address")
