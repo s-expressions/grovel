@@ -3,9 +3,14 @@
           c-groveler->string
 
           grovel-c-constant-integer
-          grovel-c-constant-integer-ifdef
+          grovel-c-constant-ifdef-integer
+
           grovel-c-constant-string
-          grovel-c-constant-string-ifdef
+          grovel-c-constant-ifdef-string
+
+          grovel-c-call-constant-string
+          grovel-c-call-constant-ifdef-string
+
           grovel-c-include
           grovel-c-quote
           grovel-c-struct-slot-offset
@@ -21,7 +26,7 @@
       filename)
 
     (define (the-identifier identifier)
-      identifier)
+      (symbol->string identifier))
 
     (define (c-string s)
       (call-with-port (open-output-string)
@@ -160,7 +165,23 @@
             "(" (the-identifier identifier) ")"
             ");"))
 
-    (define (grovel-c-constant-integer-ifdef g identifier)
+    (define (call-constant-string-thunk g function identifier)
+      (line g
+            "  "
+            "grovel_string_2("
+            (c-string "call-constant")
+            ", "
+            (c-string (the-identifier function))
+            ", "
+            (c-string (the-identifier identifier))
+            ", "
+            "("
+            (the-identifier function)
+            "(" (the-identifier identifier) ")"
+            ")"
+            ");"))
+
+    (define (grovel-c-constant-ifdef-integer g identifier)
       (with-g
        g (lambda (g)
            (line g "#ifdef " (the-identifier identifier))
@@ -172,11 +193,23 @@
        g (lambda (g)
            (constant-integer-thunk g identifier))))
 
-    (define (grovel-c-constant-string-ifdef g identifier)
+    (define (grovel-c-constant-ifdef-string g identifier)
       (with-g
        g (lambda (g)
            (line g "#ifdef " (the-identifier identifier))
            (constant-string-thunk g identifier)
+           (line g "#endif"))))
+
+    (define (grovel-c-call-constant-string g function identifier)
+      (with-g
+       g (lambda (g)
+           (call-constant-string-thunk g function identifier))))
+
+    (define (grovel-c-call-constant-ifdef-string g function identifier)
+      (with-g
+       g (lambda (g)
+           (line g "#ifdef " (the-identifier identifier))
+           (call-constant-string-thunk g function identifier)
            (line g "#endif"))))
 
     (define (grovel-c-constant-string g identifier)
@@ -247,6 +280,17 @@
          ")"
          "{"
          "  check(printf(\"(%s %s \\\"%s\\\")\\n\", prefix, symbol, value));"
+         "}"
+         ""
+         "static void grovel_string_2("
+         "  const char *prefix,"
+         "  const char *symbol1,"
+         "  const char *symbol2,"
+         "  const char *value"
+         ")"
+         "{"
+         "  check(printf(\"(%s %s %s \\\"%s\\\")\\n\","
+         "    prefix, symbol1, symbol2, value));"
          "}"
          "")
         g))

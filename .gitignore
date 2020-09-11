@@ -1,2 +1,2 @@
-/errno
-/example
+*.c
+/groveltmp
