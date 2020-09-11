@@ -32,6 +32,8 @@
                                  (grovel-c-include g filename)))
                            (else
                             (error "Huh include?" form))))
+                    ((quote-c . ,strings)
+                     (apply grovel-c-quote g strings))
                     ((constant signed ,constant)
                      (grovel-c-constant-signed g constant))
                     ((constant unsigned ,constant)
