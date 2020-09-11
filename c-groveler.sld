@@ -7,7 +7,6 @@
           grovel-c-constant-string
           grovel-c-constant-string-ifdef
           grovel-c-include
-          grovel-c-integer
           grovel-c-quote
           grovel-c-struct-field-offset
           grovel-c-struct-field-size
