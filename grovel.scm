@@ -40,6 +40,10 @@
                      (grovel-c-call-constant-string g function constant))
                     ((call-constant-ifdef string ,function ,constant)
                      (grovel-c-call-constant-ifdef-string g function constant))
+                    ((type-signedness ,type)
+                     (grovel-c-type-signedness g type))
+                    ((type-size ,type)
+                     (grovel-c-type-size g type))
                     (,_
                      (error "Huh?" form))))
                 input)
