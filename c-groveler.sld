@@ -77,8 +77,10 @@
            (line g
                  "  "
                  "grovel_symbol("
-                 (c-string "signedness") ", "
-                 (c-string (the-identifier typename)) ", "
+                 (c-string "type-signedness")
+                 ", "
+                 (c-string (the-identifier typename))
+                 ", "
                  "grovel_tmp"
                  ");"))))
 
@@ -88,7 +90,7 @@
            (line g
                  "  "
                  "grovel_uintmax("
-                 (c-string "size") ", "
+                 (c-string "type-size") ", "
                  (c-string (the-identifier typename)) ", "
                  "sizeof(" (the-identifier typename) ")"
                  ");"))))
@@ -99,7 +101,7 @@
            (line g
                  "  "
                  "grovel_uintmax("
-                 (c-string "size") ", "
+                 (c-string "type-size") ", "
                  (c-string
                   (string-append
                    "struct-" (the-identifier structname)))
@@ -116,14 +118,13 @@
            (line g "")
            (line g
                  "  "
-                 "grovel_uintmax("
-                 (c-string "size") ", "
+                 "grovel_uintmax_2("
+                 (c-string "slot-size")
+                 ", "
                  (c-string
-                  (string-append
-                   "struct-"
-                   (the-identifier structname)
-                   "."
-                   (the-identifier slot-name)))
+                  (string-append "struct-" (the-identifier structname)))
+                 ", "
+                 (c-string (the-identifier slot-name))
                  ", "
                  "sizeof(grovel_tmp." (the-identifier slot-name) "));"))))
 
@@ -131,14 +132,12 @@
       (with-g
        g (lambda (g)
            (line g "  "
-                 "grovel_uintmax("
-                 (c-string "offset") ", "
-                 (c-string
-                  (string-append
-                   "struct-"
-                   (the-identifier structname)
-                   "."
-                   (the-identifier slot-name)))
+                 "grovel_uintmax_2("
+                 (c-string "slot-offs")
+                 ", "
+                 (c-string (string-append "struct-" (the-identifier structname)))
+                 ", "
+                 (c-string (the-identifier slot-name))
                  ", "
                  "offsetof(struct " (the-identifier structname)
                  ", " (the-identifier slot-name) "));"))))
@@ -147,7 +146,7 @@
       (line g
             "  "
             "grovel_intmax("
-            (c-string "value") ", "
+            (c-string "constant") ", "
             (c-string (the-identifier identifier)) ", "
             "(intmax_t)(" (the-identifier identifier) ")"
             ");"))
@@ -156,7 +155,7 @@
       (line g
             "  "
             "grovel_string("
-            (c-string "value") ", "
+            (c-string "constant") ", "
             (c-string (the-identifier identifier)) ", "
             "(" (the-identifier identifier) ")"
             ");"))
@@ -209,6 +208,17 @@
          "{"
          "  check(printf(\"(%s %s %\" PRIuMAX \")\\n\","
          "    prefix, symbol, value));"
+         "}"
+         ""
+         "static void grovel_uintmax_2("
+         "  const char *prefix,"
+         "  const char *symbol1,"
+         "  const char *symbol2,"
+         "  uintmax_t value"
+         ")"
+         "{"
+         "  check(printf(\"(%s %s %s %\" PRIuMAX \")\\n\","
+         "    prefix, symbol1, symbol2, value));"
          "}"
          ""
          "static void grovel_intmax("
