@@ -1,0 +1,21 @@
+(include <gtk/gtk.h>)
+
+(constant signed GTK_WINDOW_TOPLEVEL)
+(constant signed GTK_WINDOW_POPUP)
+
+(constant signed GTK_WIN_POS_NONE)
+(constant signed GTK_WIN_POS_CENTER)
+(constant signed GTK_WIN_POS_MOUSE)
+(constant signed GTK_WIN_POS_CENTER_ALWAYS)
+(constant signed GTK_WIN_POS_CENTER_ON_PARENT)
+
+(constant signed G_APPLICATION_FLAGS_NONE)
+(constant signed G_APPLICATION_IS_SERVICE)
+(constant signed G_APPLICATION_IS_LAUNCHER)
+(constant signed G_APPLICATION_HANDLES_OPEN)
+(constant signed G_APPLICATION_HANDLES_COMMAND_LINE)
+(constant signed G_APPLICATION_SEND_ENVIRONMENT)
+(constant signed G_APPLICATION_NON_UNIQUE)
+(constant signed G_APPLICATION_CAN_OVERRIDE_APP_ID)
+(constant signed G_APPLICATION_ALLOW_REPLACEMENT)
+(constant signed G_APPLICATION_REPLACE)
