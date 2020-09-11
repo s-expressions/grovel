@@ -33,9 +33,11 @@
                            (else
                             (error "Huh include?" form))))
                     ((constant signed ,constant)
-                     (grovel-c-constant-integer g constant))
+                     (grovel-c-constant-signed g constant))
+                    ((constant unsigned ,constant)
+                     (grovel-c-constant-unsigned g constant))
                     ((constant-ifdef signed ,constant)
-                     (grovel-c-constant-ifdef-integer g constant))
+                     (grovel-c-constant-ifdef-signed g constant))
                     ((call-constant string ,function ,constant)
                      (grovel-c-call-constant-string g function constant))
                     ((call-constant-ifdef string ,function ,constant)

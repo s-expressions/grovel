@@ -2,8 +2,9 @@
   (export make-c-groveler
           c-groveler->string
 
-          grovel-c-constant-integer
-          grovel-c-constant-ifdef-integer
+          grovel-c-constant-signed
+          grovel-c-constant-unsigned
+          grovel-c-constant-ifdef-signed
 
           grovel-c-constant-string
           grovel-c-constant-ifdef-string
@@ -215,13 +216,22 @@
       (grovel-c-type-slot-offset g type slot)
       (grovel-c-type-slot-size g type slot))
 
-    (define (constant-integer-thunk g identifier)
+    (define (constant-signed-thunk g identifier)
       (line g
             "  "
             "grovel_intmax("
             (c-string "constant") ", "
             (c-string (the-identifier identifier)) ", "
             "(intmax_t)(" (the-identifier identifier) ")"
+            ");"))
+
+    (define (constant-unsigned-thunk g identifier)
+      (line g
+            "  "
+            "grovel_uintmax("
+            (c-string "constant") ", "
+            (c-string (the-identifier identifier)) ", "
+            "(uintmax_t)(" (the-identifier identifier) ")"
             ");"))
 
     (define (constant-string-thunk g identifier)
@@ -249,17 +259,22 @@
             ")"
             ");"))
 
-    (define (grovel-c-constant-ifdef-integer g identifier)
+    (define (grovel-c-constant-ifdef-signed g identifier)
       (with-g
        g (lambda (g)
            (line g "#ifdef " (the-identifier identifier))
-           (constant-integer-thunk g identifier)
+           (constant-signed-thunk g identifier)
            (line g "#endif"))))
 
-    (define (grovel-c-constant-integer g identifier)
+    (define (grovel-c-constant-signed g identifier)
       (with-g
        g (lambda (g)
-           (constant-integer-thunk g identifier))))
+           (constant-signed-thunk g identifier))))
+
+    (define (grovel-c-constant-unsigned g identifier)
+      (with-g
+       g (lambda (g)
+           (constant-unsigned-thunk g identifier))))
 
     (define (grovel-c-constant-ifdef-string g identifier)
       (with-g
