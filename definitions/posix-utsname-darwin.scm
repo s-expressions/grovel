@@ -1,8 +1,6 @@
 (type-size struct-utsname 1280)
 (slot-offs struct-utsname sysname 0)
 (slot-size struct-utsname sysname 256)
-(slot-offs struct-utsname sysname 0)
-(slot-size struct-utsname sysname 256)
 (slot-offs struct-utsname nodename 256)
 (slot-size struct-utsname nodename 256)
 (slot-offs struct-utsname release 512)
